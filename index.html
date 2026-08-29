@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#070811" />
+    <meta
+      name="description"
+      content="LUMEN is a tiny constellation instrument. Place lights, connect a sky, and hear it play."
+    />
+    <title>LUMEN — make a tiny sky</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-atmosphere="midnight">
+    <div class="aurora" aria-hidden="true"></div>
+    <header class="masthead">
+      <a class="wordmark" href="./" aria-label="Reset to a new LUMEN sky">
+        <span class="wordmark__spark" aria-hidden="true"></span>
+        <span>LUMEN</span>
+      </a>
+      <p>make a tiny sky</p>
+    </header>
+
+    <main>
+      <canvas
+        id="sky"
+        role="img"
+        aria-label="An interactive night sky. Click to place a light and connect a constellation."
+      ></canvas>
+      <section class="welcome" id="welcome" aria-labelledby="welcome-title">
+        <p class="eyebrow">A CONSTELLATION INSTRUMENT</p>
+        <h1 id="welcome-title">Put a little light<br />where you need it.</h1>
+        <p class="welcome__hint">
+          Tap the dark to place a note.<br />Drag lights to reshape the melody.
+        </p>
+      </section>
+    </main>
+
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+
+    <aside class="guide" id="guide" aria-hidden="true" inert>
+      <div class="guide__card" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+        <button class="guide__close" type="button" data-action="guide" aria-label="Close instructions">×</button>
+        <p class="eyebrow">HOW TO PLAY</p>
+        <h2 id="guide-title">Every sky has a song.</h2>
+        <div class="guide__steps">
+          <p><kbd>click</kbd><span>place a light</span></p>
+          <p><kbd>drag</kbd><span>move its note</span></p>
+          <p><kbd>alt</kbd> + <kbd>click</kbd><span>let it go</span></p>
+          <p><kbd>L</kbd><span>place a light by keyboard</span></p>
+          <p><kbd>space</kbd><span>play or pause</span></p>
+        </div>
+        <p class="guide__note">Your constellation stays in this browser. Share creates a link; nothing is uploaded.</p>
+      </div>
+    </aside>
+
+    <nav class="instrument" aria-label="Constellation controls">
+      <div class="counter">
+        <span class="counter__number" id="node-count">00</span>
+        <span class="counter__label">LIGHTS</span>
+      </div>
+
+      <div class="transport">
+        <button class="control" type="button" data-action="sound" aria-label="Mute sound" aria-pressed="true">
+          <svg class="icon icon--sound-on" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 9.5v5h3.2L12 18V6L7.2 9.5H4Z" />
+            <path d="M15 9c.8.7 1.2 1.7 1.2 3S15.8 14.3 15 15M17.8 6.8c1.4 1.4 2.2 3.1 2.2 5.2s-.8 3.8-2.2 5.2" />
+          </svg>
+          <svg class="icon icon--sound-off" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 9.5v5h3.2L12 18V6L7.2 9.5H4Z" />
+            <path d="m16 10 4 4m0-4-4 4" />
+          </svg>
+          <span class="control__label">Sound</span>
+        </button>
+
+        <button class="play" type="button" data-action="play" aria-label="Play constellation">
+          <svg class="icon icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 9 6-9 6V6Z" /></svg>
+          <svg class="icon icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12" /></svg>
+        </button>
+
+        <button class="control" type="button" data-action="atmosphere" aria-label="Change atmosphere">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
+          <span class="control__label">Mood</span>
+        </button>
+      </div>
+
+      <div class="actions">
+        <button class="text-button text-button--add" type="button" data-action="add" aria-label="Add a light">+</button>
+        <span aria-hidden="true">·</span>
+        <button class="text-button" type="button" data-action="share">Share sky</button>
+        <span aria-hidden="true">·</span>
+        <button class="text-button" type="button" data-action="clear">Clear</button>
+        <span aria-hidden="true">·</span>
+        <button class="text-button text-button--help" type="button" data-action="guide" aria-label="Show instructions">?</button>
+      </div>
+
+      <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+    </nav>
+
+    <template id="confirm-template">
+      <div class="confirm" role="dialog" aria-modal="true" aria-label="Clear constellation">
+        <p>Let this constellation go?</p>
+        <div>
+          <button type="button" data-confirm="no">Keep it</button>
+          <button type="button" data-confirm="yes">Let go</button>
+        </div>
+      </div>
+    </template>
+
+    <script type="module" src="./app.mjs"></script>
+  </body>
+</html>
