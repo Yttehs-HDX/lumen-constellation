@@ -6,6 +6,15 @@
 
 ## Open it
 
+Enter the reproducible development environment and start the app:
+
+```sh
+nix develop path:.
+just run
+```
+
+Or, if Node.js is already available:
+
 ```sh
 npm start
 ```
@@ -26,7 +35,9 @@ The current sky is saved to local browser storage. It has a deliberate 24-light 
 ## Check it
 
 ```sh
-npm test
+nix develop path:. -c just check
 ```
 
 The tests cover deterministic generation, immutable world edits, interaction geometry, edge generation, capacity limits, atmosphere cycling, and safe share-link round trips.
+
+Run `just` to list the available project commands. `just run 8080` starts the local server on a different port.
