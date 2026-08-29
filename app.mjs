@@ -25,7 +25,7 @@ const countLabel = document.querySelector("#node-count");
 const progress = document.querySelector("#progress");
 const status = document.querySelector("#status");
 const guide = document.querySelector("#guide");
-const guideTrigger = document.querySelector(".text-button--help");
+const guideTrigger = document.querySelector('.instrument [data-action="guide"]');
 const clearTrigger = document.querySelector('[data-action="clear"]');
 const pageRegions = [document.querySelector(".masthead"), document.querySelector("main"), document.querySelector(".instrument")];
 
@@ -118,21 +118,33 @@ function saveWorld() {
 }
 
 function syncInterface() {
+  const atmosphere = getAtmosphere(world.atmosphere);
+  const hasLights = world.nodes.length > 0;
   document.body.dataset.atmosphere = world.atmosphere;
   document.body.classList.toggle("is-playing", playing);
   document.body.classList.toggle("is-muted", muted);
-  welcome.classList.toggle("is-hidden", world.nodes.length > 0);
-  welcome.setAttribute("aria-hidden", String(world.nodes.length > 0));
+  welcome.classList.toggle("is-hidden", hasLights);
+  welcome.setAttribute("aria-hidden", String(hasLights));
   countLabel.textContent = String(world.nodes.length).padStart(2, "0");
   canvas.setAttribute(
     "aria-label",
-    `An interactive ${getAtmosphere(world.atmosphere).label.toLowerCase()} sky with ${world.nodes.length} lights.`,
+    `An interactive ${atmosphere.label.toLowerCase()} sky with ${world.nodes.length} lights.`,
   );
   const playButton = document.querySelector('[data-action="play"]');
   playButton.setAttribute("aria-label", playing ? "Pause constellation" : "Play constellation");
+  playButton.setAttribute("aria-pressed", String(playing));
+  playButton.disabled = !hasLights;
+  document.querySelector("#play-label").textContent = playing ? "Pause" : "Play";
   const soundButton = document.querySelector('[data-action="sound"]');
   soundButton.setAttribute("aria-label", muted ? "Turn sound on" : "Mute sound");
   soundButton.setAttribute("aria-pressed", String(!muted));
+  document.querySelector("#sound-label").textContent = muted ? "Muted" : "Sound";
+  const moodButton = document.querySelector('[data-action="atmosphere"]');
+  moodButton.setAttribute("aria-label", `Change atmosphere, current ${atmosphere.label}`);
+  document.querySelector("#mood-label").textContent = atmosphere.label;
+  document.querySelector('[data-action="add"]').disabled = world.nodes.length >= MAX_NODES;
+  document.querySelector('[data-action="share"]').disabled = !hasLights;
+  clearTrigger.disabled = !hasLights;
 }
 
 function setWorld(next, { save = true } = {}) {
@@ -471,7 +483,8 @@ function dismissConfirm() {
   if (!confirm) return;
   confirm.remove();
   setPageInert(false);
-  clearTrigger.focus();
+  const returnTarget = world.nodes.length ? clearTrigger : document.querySelector('[data-action="add"]');
+  returnTarget.focus();
 }
 
 function toggleGuide(force) {
@@ -531,18 +544,21 @@ document.addEventListener("click", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === " " && !guide.classList.contains("is-open")) {
+  const dialogOpen = guide.classList.contains("is-open") || Boolean(document.querySelector(".confirm"));
+  if (event.key === "Escape") {
+    if (guide.classList.contains("is-open")) toggleGuide(false);
+    else dismissConfirm();
+  } else if (dialogOpen) {
+    return;
+  } else if (event.key === " ") {
     event.preventDefault();
     togglePlaying();
   } else if (event.key.toLowerCase() === "m") {
     handleAction("sound");
   } else if (event.key.toLowerCase() === "a") {
     handleAction("atmosphere");
-  } else if (event.key.toLowerCase() === "l" && !guide.classList.contains("is-open")) {
+  } else if (event.key.toLowerCase() === "l") {
     placeKeyboardLight();
-  } else if (event.key === "Escape") {
-    if (guide.classList.contains("is-open")) toggleGuide(false);
-    else dismissConfirm();
   }
 });
 
