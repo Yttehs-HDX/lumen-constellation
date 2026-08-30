@@ -50,7 +50,7 @@ class LumenAudio {
     if (!this.context) return;
 
     this.master = this.context.createGain();
-    this.master.gain.value = 0.26;
+    this.master.gain.value = 0.8;
     this.filter = this.context.createBiquadFilter();
     this.filter.type = "lowpass";
     this.filter.frequency.value = 3100;
