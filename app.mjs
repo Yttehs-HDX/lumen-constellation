@@ -182,10 +182,15 @@ function colorWithAlpha(hex, alpha) {
   return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 }
 
-function addRipple(node, strong = false) {
+function addRipple(
+  node,
+  strong = false,
+  nodeIndex = world.nodes.findIndex((candidate) => candidate.id === node.id),
+) {
   ripples.push({ x: node.x, y: node.y, age: 0, life: strong ? 1500 : 950, strong });
   const atmosphere = getAtmosphere(world.atmosphere);
-  const color = atmosphere.colors[world.nodes.indexOf(node) % atmosphere.colors.length];
+  const colorIndex = Math.max(0, nodeIndex) % atmosphere.colors.length;
+  const color = atmosphere.colors[colorIndex];
   for (let index = 0; index < (strong ? 14 : 8); index += 1) {
     const angle = Math.random() * Math.PI * 2;
     const velocity = 0.012 + Math.random() * 0.025;
@@ -243,8 +248,9 @@ function onPointerDown(event) {
   const target = hitNode(world.nodes, point.x, point.y, 24 / viewport.width, 24 / viewport.height);
 
   if (event.altKey && target) {
+    const targetIndex = world.nodes.indexOf(target);
     setWorld(removeNode(world, target.id));
-    addRipple(target);
+    addRipple(target, false, targetIndex);
     showStatus("One light returned to the dark");
     return;
   }
